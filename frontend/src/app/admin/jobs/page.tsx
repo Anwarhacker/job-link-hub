@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { JobOpportunityDTO } from "@/models/JobOpportunity";
 import { AdminNavbar } from "@/components/AdminNavbar";
 import { AdminReferralSection } from "@/components/AdminReferralSection";
+import { AdminNotes } from "@/components/AdminNotes";
 import {
   Plus,
   Edit2,
@@ -155,6 +156,11 @@ export default function AdminJobsDashboard() {
             <p className="text-2xl font-extrabold text-rose-400">{expiredCount}</p>
           </div>
         </div>
+
+        {/* Notes Section */}
+        <section className="bg-slate-900/80 border border-slate-800 p-4 sm:p-5 shadow-xl">
+          <AdminNotes />
+        </section>
 
         {/* Referral Apps Section */}
         <section className="bg-slate-900/80 border border-slate-800 p-4 sm:p-5 shadow-xl">
