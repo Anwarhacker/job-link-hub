@@ -10,14 +10,15 @@ function verifyAdminAuth(req: NextRequest): boolean {
   return false;
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   if (!verifyAdminAuth(req))
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
+    const { id } = await params;
     const body = await req.json();
     await connectToDatabase();
-    const updated = await ReferralApp.findByIdAndUpdate(params.id, body, { new: true });
+    const updated = await ReferralApp.findByIdAndUpdate(id, body, { new: true });
     if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 });
     return NextResponse.json(updated);
   } catch {
@@ -25,13 +26,14 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   if (!verifyAdminAuth(req))
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
+    const { id } = await params;
     await connectToDatabase();
-    await ReferralApp.findByIdAndDelete(params.id);
+    await ReferralApp.findByIdAndDelete(id);
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
