@@ -7,6 +7,7 @@ import { SearchBar } from "@/components/SearchBar";
 import { JobGrid } from "@/components/JobGrid";
 import { JobOpportunityDTO } from "@/models/JobOpportunity";
 import { Sparkles, TrendingUp, Calendar, ArrowUpDown } from "lucide-react";
+import { ReferralSlider } from "@/components/ReferralSlider";
 
 export default function HomePage() {
   const [jobs, setJobs] = useState<JobOpportunityDTO[]>([]);
@@ -153,6 +154,11 @@ export default function HomePage() {
           </div>
 
           <JobGrid jobs={jobs} loading={loading} error={error} />
+        </section>
+
+        {/* Referral Apps Section */}
+        <section className="w-full">
+          <ReferralSlider />
         </section>
       </main>
 

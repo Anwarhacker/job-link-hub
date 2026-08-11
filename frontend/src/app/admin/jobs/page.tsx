@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { JobOpportunityDTO } from "@/models/JobOpportunity";
 import { AdminNavbar } from "@/components/AdminNavbar";
+import { AdminReferralSection } from "@/components/AdminReferralSection";
 import {
   Plus,
   Edit2,
@@ -25,7 +26,13 @@ export default function AdminJobsDashboard() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [adminToken, setAdminToken] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("admin_token") || "";
+    setAdminToken(token);
+  }, []);
 
   const fetchJobs = async () => {
     setLoading(true);
@@ -148,6 +155,11 @@ export default function AdminJobsDashboard() {
             <p className="text-2xl font-extrabold text-rose-400">{expiredCount}</p>
           </div>
         </div>
+
+        {/* Referral Apps Section */}
+        <section className="bg-slate-900/80 border border-slate-800 p-4 sm:p-5 shadow-xl">
+          <AdminReferralSection adminToken={adminToken} />
+        </section>
 
         {/* Jobs Table */}
         <div className="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-xl">
