@@ -1,0 +1,48 @@
+import { LinkDTO } from "@/models/Link";
+
+export const SAMPLE_LINKS: LinkDTO[] = [
+  {
+    _id: "seed-1",
+    title: "Junior Developer Hiring Post",
+    description: "Apply for Junior Software Engineer role on LinkedIn",
+    url: "https://www.linkedin.com/jobs",
+    icon: "linkedin",
+    order: 1,
+    active: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    _id: "seed-2",
+    title: "Naukri Job Opening",
+    description: "Explore tech & developer job listings on Naukri",
+    url: "https://www.naukri.com",
+    icon: "briefcase",
+    order: 2,
+    active: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    _id: "seed-3",
+    title: "Direct Job Application Form",
+    description: "Submit your resume and details for open positions",
+    url: "https://example.com/apply",
+    icon: "globe",
+    order: 3,
+    active: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    _id: "seed-4",
+    title: "Project Source Code & Repos",
+    description: "Check GitHub repositories and project documentation",
+    url: "https://github.com",
+    icon: "github",
+    order: 4,
+    active: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+];
