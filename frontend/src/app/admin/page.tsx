@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { LinkDTO } from "@/models/Link";
+import { VisitorStatsDTO } from "@/models/VisitorStats";
 import { AdminLinkForm } from "@/components/AdminLinkForm";
 import { AdminLinkList } from "@/components/AdminLinkList";
 import { DeleteConfirm } from "@/components/DeleteConfirm";
-import { Lock, LogOut, RefreshCw, ExternalLink, ShieldCheck } from "lucide-react";
+import { Lock, LogOut, RefreshCw, ExternalLink, ShieldCheck, Users, Eye } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminPage() {
@@ -14,6 +15,7 @@ export default function AdminPage() {
   const [authError, setAuthError] = useState<string | null>(null);
 
   const [links, setLinks] = useState<LinkDTO[]>([]);
+  const [visitorStats, setVisitorStats] = useState<VisitorStatsDTO | null>(null);
   const [loading, setLoading] = useState(false);
   const [editingLink, setEditingLink] = useState<LinkDTO | null>(null);
   const [deletingLink, setDeletingLink] = useState<LinkDTO | null>(null);
@@ -45,37 +47,59 @@ export default function AdminPage() {
     }
   }, [adminToken]);
 
+  const fetchVisitorStats = async () => {
+    try {
+      const res = await fetch("/api/stats/visitor");
+      if (res.ok) {
+        const data = await res.json();
+        setVisitorStats(data);
+      }
+    } catch (err) {
+      console.error("Fetch visitor stats error:", err);
+    }
+  };
+
   useEffect(() => {
     if (adminToken !== null) {
       fetchAllLinks();
+      fetchVisitorStats();
     }
   }, [adminToken, fetchAllLinks]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3000);
+    setTimeout(() => setToastMessage(null), 3500);
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
 
-    if (!passwordInput.trim()) {
-      setAuthError("Please enter your admin password");
-      return;
-    }
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: passwordInput }),
+      });
 
-    const token = passwordInput.trim();
-    sessionStorage.setItem("admin_token", token);
-    setAdminToken(token);
+      const data = await res.json();
+
+      if (res.ok && data.token) {
+        sessionStorage.setItem("admin_token", data.token);
+        setAdminToken(data.token);
+        setPasswordInput("");
+      } else {
+        setAuthError(data.error || "Invalid password");
+      }
+    } catch {
+      setAuthError("Login failed. Check server connection.");
+    }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await fetch("/api/admin/logout", { method: "POST" });
     sessionStorage.removeItem("admin_token");
     setAdminToken(null);
-    setPasswordInput("");
-    setLinks([]);
-    setEditingLink(null);
   };
 
   const handleFormSubmit = async (linkData: Partial<LinkDTO> | Partial<LinkDTO>[]) => {
@@ -85,11 +109,10 @@ export default function AdminPage() {
         "Content-Type": "application/json",
       };
       if (adminToken) {
-        headers["Authorization"] = `Bearer ${adminToken}`;
+        headers.Authorization = `Bearer ${adminToken}`;
       }
 
       if (editingLink && editingLink._id) {
-        // PUT update single link
         const res = await fetch(`/api/links/${editingLink._id}`, {
           method: "PUT",
           headers,
@@ -104,7 +127,6 @@ export default function AdminPage() {
         showToast("Link updated successfully!");
         setEditingLink(null);
       } else {
-        // POST create (single or bulk array)
         const res = await fetch("/api/links", {
           method: "POST",
           headers,
@@ -139,7 +161,7 @@ export default function AdminPage() {
         "Content-Type": "application/json",
       };
       if (adminToken) {
-        headers["Authorization"] = `Bearer ${adminToken}`;
+        headers.Authorization = `Bearer ${adminToken}`;
       }
 
       const res = await fetch(`/api/links/${link._id}`, {
@@ -149,9 +171,7 @@ export default function AdminPage() {
       });
 
       if (res.ok) {
-        showToast(
-          `Link "${link.title}" is now ${!link.active ? "Active" : "Inactive"}`
-        );
+        showToast(`Link "${link.title}" ${link.active ? "deactivated" : "activated"}`);
         await fetchAllLinks();
       }
     } catch (err) {
@@ -164,9 +184,11 @@ export default function AdminPage() {
 
     setIsDeleting(true);
     try {
-      const headers: Record<string, string> = {};
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
       if (adminToken) {
-        headers["Authorization"] = `Bearer ${adminToken}`;
+        headers.Authorization = `Bearer ${adminToken}`;
       }
 
       const res = await fetch(`/api/links/${deletingLink._id}`, {
@@ -182,71 +204,61 @@ export default function AdminPage() {
       showToast("Link deleted successfully");
       setDeletingLink(null);
       await fetchAllLinks();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Delete link error:", err);
+      alert(err instanceof Error ? err.message : "Failed to delete link");
     } finally {
       setIsDeleting(false);
     }
   };
 
-  if (adminToken === null) {
+  if (!adminToken) {
     return (
-      <main className="flex-1 flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl space-y-6">
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-4">
+        <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
           <div className="text-center space-y-2">
-            <div className="inline-flex p-3 rounded-2xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-2">
+            <div className="w-12 h-12 rounded-2xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center mx-auto">
               <Lock className="w-6 h-6" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-100">Link Manager</h1>
+            <h1 className="text-2xl font-extrabold text-white">Admin Access</h1>
             <p className="text-xs text-slate-400">
-              Enter your admin password to access the control panel.
+              Enter password to access the Bio Link Admin Dashboard.
             </p>
           </div>
 
-          {authError && (
-            <div className="p-3 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-300 text-xs text-center">
-              {authError}
-            </div>
-          )}
-
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                 Admin Password
               </label>
               <input
                 type="password"
-                placeholder="Enter password..."
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-                autoFocus
+                placeholder="Enter password..."
+                required
+                className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-sm focus:outline-none focus:border-indigo-500"
               />
             </div>
 
+            {authError && (
+              <p className="text-xs text-rose-400 font-medium text-center">{authError}</p>
+            )}
+
             <button
               type="submit"
-              className="w-full py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm shadow-lg shadow-indigo-600/20 transition-all duration-200"
+              className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/20 transition-colors"
             >
-              Access Admin Panel
+              Authenticate Admin
             </button>
           </form>
-
-          <div className="text-center pt-2">
-            <Link
-              href="/anwar"
-              className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 transition-colors"
-            >
-              Back to Public Bio <ExternalLink className="w-3 h-3" />
-            </Link>
-          </div>
         </div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+    <main className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6 bg-slate-950 text-slate-100 min-h-screen">
       {toastMessage && (
         <div className="fixed top-4 right-4 z-50 px-4 py-3 rounded-xl bg-indigo-600 text-white text-sm font-medium shadow-2xl flex items-center gap-2 animate-fade-in">
           <ShieldCheck className="w-4 h-4" />
@@ -266,16 +278,19 @@ export default function AdminPage() {
 
         <div className="flex items-center gap-2">
           <button
-            onClick={fetchAllLinks}
+            onClick={() => {
+              fetchAllLinks();
+              fetchVisitorStats();
+            }}
             disabled={loading}
             className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs flex items-center gap-1 transition-colors"
-            title="Refresh links"
+            title="Refresh links & stats"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           </button>
 
           <Link
-            href="/anwar"
+            href="/"
             target="_blank"
             className="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 text-xs font-medium flex items-center gap-1.5 transition-colors"
           >
@@ -290,6 +305,33 @@ export default function AdminPage() {
           </button>
         </div>
       </header>
+
+      {/* Visitor Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+          <div>
+            <span className="text-slate-400 text-xs font-medium block">Total App Visits</span>
+            <p className="text-2xl font-extrabold text-purple-400 mt-0.5">
+              {visitorStats ? visitorStats.totalVisits.toLocaleString() : "..."}
+            </p>
+          </div>
+          <div className="p-3 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20">
+            <Eye className="w-5 h-5" />
+          </div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+          <div>
+            <span className="text-slate-400 text-xs font-medium block">Unique Visitors</span>
+            <p className="text-2xl font-extrabold text-emerald-400 mt-0.5">
+              {visitorStats ? visitorStats.uniqueVisitors.toLocaleString() : "..."}
+            </p>
+          </div>
+          <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <Users className="w-5 h-5" />
+          </div>
+        </div>
+      </div>
 
       <section>
         <AdminLinkForm

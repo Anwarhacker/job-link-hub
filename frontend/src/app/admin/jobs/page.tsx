@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { JobOpportunityDTO } from "@/models/JobOpportunity";
+import { VisitorStatsDTO } from "@/models/VisitorStats";
 import { AdminNavbar } from "@/components/AdminNavbar";
 import { AdminReferralSection } from "@/components/AdminReferralSection";
 import { AdminNotes } from "@/components/AdminNotes";
@@ -19,10 +20,12 @@ import {
   Eye,
   AlertTriangle,
   X,
+  Users,
 } from "lucide-react";
 
 export default function AdminJobsDashboard() {
   const [jobs, setJobs] = useState<JobOpportunityDTO[]>([]);
+  const [visitorStats, setVisitorStats] = useState<VisitorStatsDTO | null>(null);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -50,8 +53,21 @@ export default function AdminJobsDashboard() {
     }
   };
 
+  const fetchVisitorStats = async () => {
+    try {
+      const res = await fetch("/api/stats/visitor");
+      if (res.ok) {
+        const data = await res.json();
+        setVisitorStats(data);
+      }
+    } catch (err) {
+      console.error("Fetch visitor stats error:", err);
+    }
+  };
+
   useEffect(() => {
     fetchJobs();
+    fetchVisitorStats();
   }, []);
 
   const showToast = (msg: string) => {
@@ -107,16 +123,19 @@ export default function AdminJobsDashboard() {
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white">Dashboard Overview</h1>
             <p className="text-xs sm:text-sm text-slate-400">
-              Manage your job & internship opportunities.
+              Manage your job & internship opportunities and track app analytics.
             </p>
           </div>
 
           <div className="flex items-center gap-3">
             <button
-              onClick={fetchJobs}
+              onClick={() => {
+                fetchJobs();
+                fetchVisitorStats();
+              }}
               disabled={loading}
               className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 transition-colors"
-              title="Refresh"
+              title="Refresh Stats & Jobs"
             >
               <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
             </button>
@@ -131,7 +150,22 @@ export default function AdminJobsDashboard() {
         </header>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1">
+            <div className="flex items-center justify-between text-slate-400 text-xs font-medium">
+              <span>Total App Visitors</span>
+              <Users className="w-4 h-4 text-purple-400" />
+            </div>
+            <p className="text-2xl font-extrabold text-purple-400">
+              {visitorStats ? visitorStats.totalVisits.toLocaleString() : "..."}
+            </p>
+            <p className="text-[10px] text-slate-500 truncate">
+              {visitorStats?.uniqueVisitors
+                ? `${visitorStats.uniqueVisitors.toLocaleString()} unique visitors`
+                : "Live tracking"}
+            </p>
+          </div>
+
           <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1">
             <div className="flex items-center justify-between text-slate-400 text-xs font-medium">
               <span>Total Opportunities</span>

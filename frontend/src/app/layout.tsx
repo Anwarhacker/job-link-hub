@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { VisitorTracker } from "@/components/VisitorTracker";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,6 +28,7 @@ export default function RootLayout({
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="min-h-screen flex flex-col antialiased selection:bg-blue-600/30">
         <ThemeProvider>
+          <VisitorTracker />
           {/* Modern Ambient Gradient Background Glow */}
           <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
             <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[140px]" />
