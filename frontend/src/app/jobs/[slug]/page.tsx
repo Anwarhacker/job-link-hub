@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { JobDetails } from "@/components/JobDetails";
+import { ReferralSlider } from "@/components/ReferralSlider";
 import { connectToDatabase } from "@/lib/mongodb";
 import JobOpportunity from "@/models/JobOpportunity";
 import { SAMPLE_JOBS } from "@/lib/seedJobs";
@@ -75,8 +76,13 @@ export default async function JobSlugPage({ params }: PageProps) {
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
         <JobDetails job={job} />
+
+        {/* Referral Apps Section */}
+        <section className="w-full pt-4 border-t border-slate-800">
+          <ReferralSlider />
+        </section>
       </main>
 
       <Footer />

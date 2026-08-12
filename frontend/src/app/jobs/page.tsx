@@ -5,6 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { SearchBar } from "@/components/SearchBar";
 import { JobGrid } from "@/components/JobGrid";
+import { ReferralSlider } from "@/components/ReferralSlider";
 import { JobOpportunityDTO } from "@/models/JobOpportunity";
 import { Briefcase, Calendar, ArrowUpDown } from "lucide-react";
 
@@ -62,7 +63,7 @@ export default function JobsPage() {
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans transition-colors">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
         <div className="space-y-4">
           <div className="flex items-center space-x-3">
             <div className="p-3 rounded-2xl bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
@@ -131,6 +132,11 @@ export default function JobsPage() {
         </div>
 
         <JobGrid jobs={jobs} loading={loading} error={error} />
+
+        {/* Referral Apps Section after jobs */}
+        <section className="w-full pt-4 border-t border-slate-200 dark:border-slate-800/80">
+          <ReferralSlider />
+        </section>
       </main>
 
       <Footer />

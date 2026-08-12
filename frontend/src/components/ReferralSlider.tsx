@@ -128,10 +128,10 @@ export const ReferralSlider: React.FC = () => {
                   </div>
 
                   <div>
-                    <h4 className="text-sm sm:text-base font-bold text-white group-hover:text-emerald-400 transition-colors line-clamp-1">
+                    <h4 className="text-sm sm:text-base font-extrabold text-white !text-white line-clamp-1">
                       {app.name}
                     </h4>
-                    <p className="text-[11px] text-slate-400 line-clamp-1">
+                    <p className="text-[11px] font-medium text-slate-300 !text-slate-300 line-clamp-1">
                       Sign-up Reward Available
                     </p>
                   </div>
