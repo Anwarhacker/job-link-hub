@@ -159,7 +159,7 @@ export default function AdminJobsDashboard() {
 
         {/* Notes Section */}
         <section className="bg-slate-900/80 border border-slate-800 p-4 sm:p-5 shadow-xl">
-          <AdminNotes />
+          <AdminNotes adminToken={adminToken} />
         </section>
 
         {/* Referral Apps Section */}

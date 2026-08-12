@@ -16,15 +16,64 @@
   }
 }
 
-.light-theme {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+/* ==========================================================================
+   THEMES: DARK SLATE (DEFAULT) & LIGHT MODE
+   ========================================================================== */
+
+/* Dark Slate Theme */
+.dark, .theme-dark {
+  --background: #090d16;
+  --foreground: #f8fafc;
+  color-scheme: dark;
 }
 
-.light-theme body {
-  background-color: #f8fafc;
-  color: #0f172a;
+/* Light Mode Theme */
+.light, .theme-light {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  color-scheme: light;
 }
+.light body, .theme-light body {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+.light .bg-slate-950,
+.light .dark\:bg-slate-950,
+.light .dark\:bg-slate-950\/80,
+.light .bg-slate-900,
+.light .dark\:bg-slate-900,
+.light .dark\:bg-slate-900\/70,
+.light .dark\:bg-slate-900\/80,
+.light .dark\:bg-slate-900\/90,
+.light .bg-slate-950\/85 {
+  background-color: #ffffff !important;
+}
+.light .border-slate-800,
+.light .dark\:border-slate-800,
+.light .border-slate-800\/80,
+.light .dark\:border-slate-800\/80,
+.light .dark\:border-slate-800\/90 {
+  border-color: #cbd5e1 !important;
+}
+.light .text-slate-100,
+.light .dark\:text-slate-100,
+.light .text-slate-200,
+.light .dark\:text-slate-200,
+.light .text-slate-300,
+.light .dark\:text-slate-300,
+.light .text-white,
+.light .dark\:text-white {
+  color: #0f172a !important;
+}
+.light .text-slate-400,
+.light .dark\:text-slate-400,
+.light .text-slate-500 {
+  color: #475569 !important;
+}
+
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
 
 @keyframes fadeIn {
   from {

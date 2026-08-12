@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
-import ReferralApp from "@/models/ReferralApp";
+import Note from "@/models/Note";
 import { getAdminFromRequest } from "@/lib/auth";
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -12,19 +12,21 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
     const { id } = await params;
     const body = await req.json();
-
     const db = await connectToDatabase();
 
     if (!db) {
       return NextResponse.json({ success: true, message: "Demo mode update" });
     }
 
-    const updated = await ReferralApp.findByIdAndUpdate(id, body, { new: true });
-    if (!updated) return NextResponse.json({ error: "Referral app not found" }, { status: 404 });
-    return NextResponse.json(updated, { status: 200 });
+    const updatedNote = await Note.findByIdAndUpdate(id, body, { new: true });
+    if (!updatedNote) {
+      return NextResponse.json({ error: "Note not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(updatedNote, { status: 200 });
   } catch (error) {
-    console.error("PUT /api/referrals/[id] error:", error);
-    return NextResponse.json({ error: "Failed to update referral app" }, { status: 500 });
+    console.error("PUT /api/notes/[id] error:", error);
+    return NextResponse.json({ error: "Failed to update note" }, { status: 500 });
   }
 }
 
@@ -42,10 +44,10 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
       return NextResponse.json({ success: true, message: "Demo mode delete" });
     }
 
-    await ReferralApp.findByIdAndDelete(id);
+    await Note.findByIdAndDelete(id);
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.error("DELETE /api/referrals/[id] error:", error);
-    return NextResponse.json({ error: "Failed to delete referral app" }, { status: 500 });
+    console.error("DELETE /api/notes/[id] error:", error);
+    return NextResponse.json({ error: "Failed to delete note" }, { status: 500 });
   }
 }
