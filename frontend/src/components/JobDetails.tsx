@@ -213,7 +213,7 @@ export const JobDetails: React.FC<JobDetailsProps> = ({ job }) => {
               {job.skills.map((skill, i) => (
                 <span
                   key={i}
-                  className="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700/80 shadow-sm"
+                  className="skill-pill px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-bold text-white shadow-sm flex items-center justify-center"
                 >
                   {skill}
                 </span>

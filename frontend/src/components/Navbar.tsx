@@ -35,7 +35,7 @@ export const Navbar: React.FC = () => {
           <ThemeToggle />
           <Link
             href="/jobs"
-            className="text-xs sm:text-sm font-medium text-slate-300 hover:text-white transition-colors px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border border-slate-700 hover:bg-slate-900"
+            className="text-xs sm:text-sm font-medium text-slate-300 hover:text-black transition-colors px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border border-slate-700 hover:bg-white"
           >
             All Opportunities
           </Link>

@@ -124,14 +124,14 @@ export const JobCard: React.FC<JobCardProps> = ({ job }) => {
             {job.skills.slice(0, 4).map((skill, i) => (
               <span
                 key={i}
-                className="text-[10px] sm:text-[11px] font-medium text-white dark:text-slate-300 bg-slate-100 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/60 px-2 py-0.5 rounded-lg"
+                className="skill-pill text-[10px] sm:text-[11px] font-semibold text-white px-2.5 py-0.5 rounded-full shadow-xs flex items-center justify-center"
               >
                 {skill}
               </span>
             ))}
             {job.skills.length > 4 && (
-              <span className="text-[10px] sm:text-[11px] text-white py-0.5">
-                +{job.skills.length - 4} moresss
+              <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 py-0.5">
+                +{job.skills.length - 4} more
               </span>
             )}
           </div>

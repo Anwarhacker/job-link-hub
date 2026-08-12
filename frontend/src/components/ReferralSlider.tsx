@@ -1,13 +1,23 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, DollarSign, Share2, Check } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Sparkles,
+  Share2,
+  Check,
+  ExternalLink,
+  Gift,
+  Copy,
+} from "lucide-react";
 import { ReferralAppDTO } from "@/models/ReferralApp";
 
 export const ReferralSlider: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [apps, setApps] = useState<ReferralAppDTO[]>([]);
-  const [copied, setCopied] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [copiedCodeId, setCopiedCodeId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/referrals")
@@ -15,86 +25,175 @@ export const ReferralSlider: React.FC = () => {
       .then((data) => Array.isArray(data) && setApps(data));
   }, []);
 
-  const handleShare = (app: ReferralAppDTO) => {
+  const handleShare = (app: ReferralAppDTO, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     const codeText = app.referralCode ? ` | Code: ${app.referralCode}` : "";
     const text = `💰 Earn ${app.bonus} referral bonus on ${app.name}!${codeText} Sign up here: ${app.url}`;
     if (navigator.share) {
       navigator.share({ title: `${app.name} Referral`, text, url: app.url });
     } else {
       navigator.clipboard.writeText(text);
-      setCopied(app._id!);
-      setTimeout(() => setCopied(null), 2000);
+      setCopiedId(app._id!);
+      setTimeout(() => setCopiedId(null), 2000);
     }
+  };
+
+  const handleCopyCode = (code: string, id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigator.clipboard.writeText(code);
+    setCopiedCodeId(id);
+    setTimeout(() => setCopiedCodeId(null), 2000);
   };
 
   const scroll = (dir: "left" | "right") => {
     if (scrollRef.current)
-      scrollRef.current.scrollBy({ left: dir === "left" ? -280 : 280, behavior: "smooth" });
+      scrollRef.current.scrollBy({
+        left: dir === "left" ? -300 : 300,
+        behavior: "smooth",
+      });
   };
 
   if (apps.length === 0) return null;
 
   return (
-    <div className="space-y-3 w-full">
+    <div className="space-y-4 w-full">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-xs sm:text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-          <DollarSign className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-400 flex-shrink-0" />
-          High Referral Bonus Apps
-        </h3>
-        <div className="flex gap-1 flex-shrink-0">
+        <div className="flex items-center gap-2.5">
+          <div className="p-2 rounded-xl bg-gradient-to-tr from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 text-emerald-400 shadow-md shadow-emerald-500/10">
+            <Gift className="w-4 h-4 sm:w-5 sm:h-5" />
+          </div>
+          <div>
+            <h3 className="text-sm sm:text-base font-bold text-white tracking-tight flex items-center gap-2">
+              High Bonus Referral Apps
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">
+                Featured
+              </span>
+            </h3>
+            <p className="text-xs text-slate-400 hidden xs:block">
+              Earn instant sign-up bonuses using exclusive referral codes.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-1.5 flex-shrink-0">
           <button
             onClick={() => scroll("left")}
-            className="p-1.5 border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 text-slate-400 hover:text-white transition-all shadow-sm"
+            aria-label="Scroll left"
           >
-            <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <ChevronLeft className="w-4 h-4" />
           </button>
           <button
             onClick={() => scroll("right")}
-            className="p-1.5 border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 text-slate-400 hover:text-white transition-all shadow-sm"
+            aria-label="Scroll right"
           >
-            <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* Slider */}
+      {/* Cards Slider */}
       <div
         ref={scrollRef}
-        className="flex gap-2 sm:gap-2.5 overflow-x-auto scroll-smooth pb-2"
+        className="flex gap-3 sm:gap-4 overflow-x-auto scroll-smooth pb-3 pt-1 px-0.5"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
-        {apps.map((app) => (
-          <div
-            key={app._id}
-            className="flex-shrink-0 flex flex-col bg-slate-900 border border-slate-800 hover:border-slate-600 transition-colors overflow-hidden w-[130px] sm:w-[145px] md:w-[155px]"
-          >
-            <a
-              href={app.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex flex-col gap-1.5 px-3 pt-3 pb-2.5 flex-1"
+        {apps.map((app) => {
+          const initial = app.name.charAt(0).toUpperCase();
+
+          return (
+            <div
+              key={app._id}
+              className="group relative flex-shrink-0 flex flex-col justify-between w-[200px] sm:w-[220px] rounded-2xl bg-gradient-to-b from-slate-900/90 via-slate-900/60 to-slate-950/90 border border-slate-800/90 hover:border-emerald-500/40 hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-1 transition-all duration-300 backdrop-blur-xl overflow-hidden"
             >
-              <span className="text-xs sm:text-sm font-semibold text-white leading-tight">{app.name}</span>
-              <span className="text-[11px] sm:text-xs font-bold text-green-400">{app.bonus} bonus</span>
-              {app.referralCode && (
-                <span className="text-[10px] sm:text-[11px] font-mono text-blue-400 bg-blue-500/10 border border-blue-500/20 px-1.5 py-0.5 self-start leading-tight break-all">
-                  {app.referralCode}
-                </span>
-              )}
-            </a>
-            <button
-              onClick={() => handleShare(app)}
-              className="flex items-center justify-center gap-1 py-2 text-[10px] sm:text-[11px] font-medium border-t border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-            >
-              {copied === app._id ? (
-                <><Check className="w-3 h-3 text-green-400" /><span className="text-green-400">Copied</span></>
-              ) : (
-                <><Share2 className="w-3 h-3" />Share</>
-              )}
-            </button>
-          </div>
-        ))}
+              {/* Top Banner Accent */}
+              <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-teal-400 to-blue-500 opacity-80 group-hover:opacity-100 transition-opacity" />
+
+              <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
+                {/* Header info */}
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-950 font-black text-base flex items-center justify-center shadow-md shadow-emerald-500/20 flex-shrink-0">
+                      {initial}
+                    </div>
+
+                    <span className="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-white text-emerald-400 border border-emerald-500/30 shadow-sm">
+                      <Sparkles className="w-3 h-3 text-emerald-400" />
+                      {app.bonus}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h4 className="text-sm sm:text-base font-bold text-white group-hover:text-emerald-400 transition-colors line-clamp-1">
+                      {app.name}
+                    </h4>
+                    <p className="text-[11px] text-slate-400 line-clamp-1">
+                      Sign-up Reward Available
+                    </p>
+                  </div>
+                </div>
+
+                {/* Referral Code Box */}
+                {app.referralCode ? (
+                  <div className="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-slate-950/80 border border-slate-800/90 text-xs group-hover:border-slate-700/80 transition-colors">
+                    <div className="flex flex-col">
+                      <span className="text-[9px] uppercase tracking-wider text-slate-500 font-bold">
+                        Referral Code
+                      </span>
+                      <span className="font-mono text-[11px] font-bold text-blue-400 truncate max-w-[110px]">
+                        {app.referralCode}
+                      </span>
+                    </div>
+                    <button
+                      onClick={(e) =>
+                        handleCopyCode(app.referralCode, app._id!, e)
+                      }
+                      className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors flex-shrink-0"
+                      title="Copy referral code"
+                    >
+                      {copiedCodeId === app._id ? (
+                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      ) : (
+                        <Copy className="w-3.5 h-3.5" />
+                      )}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="h-2" />
+                )}
+              </div>
+
+              {/* Card Footer Actions */}
+              <div className="p-3 bg-slate-950/60 border-t border-slate-800/80 flex items-center gap-2">
+                <a
+                  href={app.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 py-2 px-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold text-xs flex items-center justify-center gap-1 shadow-md shadow-emerald-600/20 transition-all text-center"
+                >
+                  <span>Claim</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+
+                <button
+                  onClick={(e) => handleShare(app, e)}
+                  className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-400 hover:text-white transition-all flex items-center justify-center flex-shrink-0"
+                  title="Share referral link"
+                >
+                  {copiedId === app._id ? (
+                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  ) : (
+                    <Share2 className="w-3.5 h-3.5" />
+                  )}
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
