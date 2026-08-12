@@ -34,8 +34,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         <div className="absolute -inset-[300%] bg-[conic-gradient(from_0deg_at_50%_50%,#3b82f6_0deg,#6366f1_90deg,#ec4899_180deg,#06b6d4_270deg,#3b82f6_360deg)] animate-snake-border opacity-80 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity" />
 
         {/* Inner Input Container */}
-        <div className="relative flex items-center w-full bg-slate-950/95 rounded-[18px] backdrop-blur-xl">
-          <div className="absolute left-4 text-blue-400 group-focus-within:text-cyan-400 transition-colors pointer-events-none flex items-center gap-1">
+        <div className="relative flex items-center w-full bg-white dark:bg-slate-950/95 rounded-[18px] backdrop-blur-xl">
+          <div className="absolute left-4 text-blue-600 dark:text-blue-400 group-focus-within:text-cyan-600 dark:group-focus-within:text-cyan-400 transition-colors pointer-events-none flex items-center gap-1">
             <Search className="w-5 h-5" />
           </div>
 
@@ -47,20 +47,20 @@ export const SearchBar: React.FC<SearchBarProps> = ({
               onSearch(e.target.value.trim());
             }}
             placeholder={placeholder}
-            className="w-full pl-12 pr-10 py-3.5 sm:py-4 rounded-[18px] bg-transparent text-slate-100 placeholder-slate-500 text-sm sm:text-base focus:outline-none transition-all font-sans"
+            className="w-full pl-12 pr-10 py-3.5 sm:py-4 rounded-[18px] bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm sm:text-base focus:outline-none transition-all font-sans"
           />
 
           {value ? (
             <button
               type="button"
               onClick={handleClear}
-              className="absolute right-4 text-slate-400 hover:text-slate-200 p-1 rounded-full hover:bg-slate-800 transition-colors"
+              className="absolute right-4 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
           ) : (
-            <div className="absolute right-4 text-slate-600 pointer-events-none hidden sm:block">
-              <Sparkles className="w-4 h-4 text-blue-500/40 animate-pulse" />
+            <div className="absolute right-4 text-slate-400 dark:text-slate-600 pointer-events-none hidden sm:block">
+              <Sparkles className="w-4 h-4 text-blue-500/60 dark:text-blue-500/40 animate-pulse" />
             </div>
           )}
         </div>

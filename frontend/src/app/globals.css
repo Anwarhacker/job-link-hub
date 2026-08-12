@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   :root {
     --background: #090d16;
@@ -44,44 +46,93 @@
 
 /* Light Mode Theme */
 .light, .theme-light {
-  --background: #f8fafc;
+  --background: #ffffff;
   --foreground: #0f172a;
   color-scheme: light;
 }
 .light body, .theme-light body {
-  background-color: #f8fafc !important;
+  background-color: #ffffff !important;
   color: #0f172a !important;
 }
+
+/* Light Mode Background Overrides for Cards, Dropdowns & Modals */
 .light .bg-slate-950,
-.light .dark\:bg-slate-950,
-.light .dark\:bg-slate-950\/80,
+.light .bg-slate-950\/95,
+.light .bg-slate-950\/85,
+.light .bg-slate-950\/80,
+.light .bg-slate-950\/60,
 .light .bg-slate-900,
+.light .bg-slate-900\/90,
+.light .bg-slate-900\/80,
+.light .bg-slate-900\/70,
+.light .bg-slate-900\/60,
+.light .bg-slate-900\/50,
+.light .dark\:bg-slate-950,
+.light .dark\:bg-slate-950\/95,
+.light .dark\:bg-slate-950\/80,
 .light .dark\:bg-slate-900,
 .light .dark\:bg-slate-900\/70,
 .light .dark\:bg-slate-900\/80,
-.light .dark\:bg-slate-900\/90,
-.light .bg-slate-950\/85 {
+.light .dark\:bg-slate-900\/90 {
   background-color: #ffffff !important;
 }
+
+/* Light Mode Border Overrides */
 .light .border-slate-800,
-.light .dark\:border-slate-800,
+.light .border-slate-800\/90,
 .light .border-slate-800\/80,
+.light .border-slate-800\/60,
+.light .border-slate-700,
+.light .dark\:border-slate-800,
 .light .dark\:border-slate-800\/80,
 .light .dark\:border-slate-800\/90 {
-  border-color: #cbd5e1 !important;
+  border-color: #e2e8f0 !important;
 }
+
+/* Light Mode Text Overrides */
 .light .text-slate-100,
 .light .dark\:text-slate-100,
 .light .text-slate-200,
 .light .dark\:text-slate-200,
 .light .text-slate-300,
-.light .dark\:text-slate-300 {
+.light .dark\:text-slate-300,
+.light .text-white,
+.light .dark\:text-white {
   color: #0f172a !important;
 }
 .light .text-slate-400,
 .light .dark\:text-slate-400,
 .light .text-slate-500 {
   color: #475569 !important;
+}
+
+/* Light Mode Badge & Search Bar Overrides */
+.light .bg-blue-950\/80,
+.light .dark\:bg-blue-950\/80 {
+  background-color: #dbeafe !important;
+}
+.light .border-blue-800\/60,
+.light .dark\:border-blue-800\/60 {
+  border-color: #bfdbfe !important;
+}
+.light .text-blue-400,
+.light .dark\:text-blue-400 {
+  color: #1d4ed8 !important;
+}
+.light input,
+.light textarea {
+  color: #0f172a !important;
+}
+.light input::placeholder,
+.light textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Ensure Skill Pill Badges Keep Crisp White Text in Light Mode */
+.light .skill-pill {
+  color: #ffffff !important;
+  background-color: #334155 !important;
+  border-color: #475569 !important;
 }
 
 /* ==========================================================================
