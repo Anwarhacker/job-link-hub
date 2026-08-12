@@ -117,7 +117,7 @@ export const ReferralSlider: React.FC = () => {
                 {/* Header info */}
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-950 font-black text-base flex items-center justify-center shadow-md shadow-emerald-500/20 flex-shrink-0">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-white font-black text-base flex items-center justify-center shadow-md shadow-emerald-500/20 flex-shrink-0">
                       {initial}
                     </div>
 
