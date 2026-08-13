@@ -15,16 +15,16 @@ export const Navbar: React.FC = () => {
           className="flex items-center space-x-2 sm:space-x-2.5 group flex-shrink-0"
         >
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
-            <Briefcase className="w-4 h-4 sm:w-5 sm:h-5" />
+            <Briefcase className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
           </div>
           <div>
-            <span className="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-1 font-sans">
+            <span className="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-1 font-sans">
               TechHire{" "}
-              <span className="text-[10px] sm:text-xs px-1.5 py-0.5 rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/20">
+              <span className="text-[10px] sm:text-xs px-1.5 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
                 BIO
               </span>
             </span>
-            <p className="text-[10px] text-slate-400 -mt-1 hidden sm:block">
+            <p className="text-[10px] text-slate-600 dark:text-slate-400 -mt-1 hidden sm:block">
               Latest Jobs & Internships
             </p>
           </div>
@@ -35,7 +35,7 @@ export const Navbar: React.FC = () => {
           <ThemeToggle />
           <Link
             href="/jobs"
-            className="text-xs sm:text-sm font-medium text-slate-300 hover:text-black transition-colors px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border border-slate-700 hover:bg-white"
+            className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
           >
             All Opportunities
           </Link>

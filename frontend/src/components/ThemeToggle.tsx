@@ -16,7 +16,7 @@ export const ThemeToggle: React.FC = () => {
       className={`p-2 sm:px-3 sm:py-2 rounded-xl border flex items-center gap-1.5 text-xs font-semibold shadow-md transition-all ${
         isDark
           ? "bg-slate-900 border-slate-700/80 text-slate-200 hover:bg-slate-800"
-          : "bg-white border-slate-300 text-slate-800 hover:bg-slate-100"
+          : "bg-white border-slate-300 text-slate-200 hover:bg-slate-100"
       }`}
       aria-label="Toggle theme"
       title={isDark ? "Switch to Light Mode" : "Switch to Dark Slate"}
